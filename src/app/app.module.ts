@@ -2,7 +2,7 @@ import {NgModule, ErrorHandler} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {IonicApp, IonicModule, IonicErrorHandler} from 'ionic-angular';
 import {MyApp} from './app.component';
-import { HttpClientModule } from '@angular/common/http';
+import {HttpClientModule} from '@angular/common/http';
 
 import {ContactPage} from '../pages/contact/contact';
 import {HomePage} from '../pages/home/home';
@@ -11,14 +11,12 @@ import {AngularFireModule} from 'angularfire2';
 
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
-import {MapComponent} from "../pages/map/map/map";
-import {CommentsPage} from "../pages/map/comments/comments";
 import {AlertPage} from "../pages/map/alert";
 import {IonicStorageModule} from "@ionic/storage";
 import {AngularFireAuthModule} from 'angularfire2/auth';
 import {LocationsService} from "./services/LocationsService";
 import {LoginService} from "./services/LoginService";
-
+import {AlertsService} from './services/AlertsService';
 
 @NgModule({
   declarations: [
@@ -27,8 +25,6 @@ import {LoginService} from "./services/LoginService";
     HomePage,
     TabsPage,
     AlertPage,
-    CommentsPage,
-    MapComponent
   ],
   imports: [
     BrowserModule,
@@ -52,14 +48,13 @@ import {LoginService} from "./services/LoginService";
     HomePage,
     TabsPage,
     AlertPage,
-    CommentsPage,
-    MapComponent
   ],
   providers: [
     StatusBar,
     SplashScreen,
     LocationsService,
     LoginService,
+    AlertsService,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

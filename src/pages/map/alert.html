@@ -3,6 +3,23 @@
     height: 100%;
     width: 100%;
   }
+
+  .buttonContainer {
+    position: absolute;
+    z-index: 1000;
+    width: 75%;
+    left: 0;
+    bottom: 0;
+    text-align: left;
+    margin-bottom: 30px;
+  }
+
+  ion-badge {
+    margin-right: 5px;
+  }
+
+  button {
+  }
 </style>
 
 <ion-header dir="rtl">
@@ -16,23 +33,28 @@
       </button>
     </ion-title>
   </ion-navbar>
-  <ion-navbar color="light" style="color: white">
-    <ion-segment [(ngModel)]="viewChoose">
-      <ion-segment-button value="map">
-        <span>תצוגת מפה</span>
-      </ion-segment-button>
-      <ion-segment-button value="comments">
-        <span>פרטים ותגובות</span>
-      </ion-segment-button>
-    </ion-segment>
-  </ion-navbar>
+
 </ion-header>
 
 <ion-content dir="rtl">
-
-  <div id="map" [hidden]="viewChoose!='map'"></div>
-  <div *ngIf="viewChoose=='comments'">
-    <comments></comments>
+  <div class="buttonContainer">
+    <button ion-button (click)="voteProperty('isIntercepted')" round [color]="didVote.isIntercepted? 'primary' : 'light'">
+      נשמע יירוט
+      <ion-badge color="danger" *ngIf="isIntercepted>0">{{isIntercepted}}</ion-badge>
+    </button>
+    <button ion-button (click)="voteProperty('isCasualties')" round [color]="didVote.isCasualties? 'primary' : 'light'">
+      יש נפגעים
+      <ion-badge color="danger" *ngIf="isCasualties>0">{{isCasualties}}</ion-badge>
+    </button>
+    <button ion-button (click)="voteProperty('isDamage')" round [color]="didVote.isDamage? 'primary' : 'light'">
+      נגרם נזק
+      <ion-badge color="danger" *ngIf="isDamage>0">{{isDamage}}</ion-badge>
+    </button>
+    <button ion-button (click)="voteProperty('isTrueAlert')" round [color]="didVote.isTrueAlert? 'primary' : 'light'">
+      אזעקת אמת
+      <ion-badge color="danger" *ngIf="isTrueAlert>0">{{isTrueAlert}}</ion-badge>
+    </button>
   </div>
+  <div id="map" [hidden]="viewChoose!='map'"></div>
 
 </ion-content>

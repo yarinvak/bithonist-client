@@ -16,6 +16,7 @@ import {Platform} from 'ionic-angular';
 
 import {HttpClient} from '@angular/common/http';
 
+import {AlertsService} from '../../app/services/AlertsService';
 
 declare let $: any;
 
@@ -30,7 +31,7 @@ export class HomePage {
   @Output() changeLocations = new EventEmitter();
 
   constructor(private platform: Platform, public navCtrl: NavController, private alertCtrl: AlertController,
-              private http: HttpClient, private locationsService: LocationsService, storage: Storage) {
+              private http: HttpClient, private locationsService: LocationsService, private alertsService: AlertsService) {
     if (platform.is('core')) {
       this.history_url = '/api';
     }
@@ -59,6 +60,7 @@ export class HomePage {
         console.log('completed reading history');
         if (refresher) refresher.complete();
         this.isLoading = false;
+        this.alertsService.setAlerts(this.alerts);
       }
     );
   }
@@ -135,12 +137,5 @@ export class HomePage {
         this.regions = data;
         this.readHistory(null);
       }, err => console.log(err));
-
-    // .subscribe(
-    //     data => {
-    //       this.regions = data;
-    //       this.readHistory(null);
-    //     }, err => console.log(err), () => console.log('completed reading regions')
-    //   );
   }
 }

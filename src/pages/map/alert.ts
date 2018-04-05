@@ -19,12 +19,26 @@ export class AlertPage {
 
   constructor(public navCtrl: NavController,
               private locationsService: LocationsService) {
-
+    this.getAlertMetadata();
   }
 
   viewChoose = 'map';
   cities = [];
   region = '';
+
+  isIntercepted: number;
+  isDamage: number;
+  isCasualties: number;
+  isTrueAlert: number;
+  didVote: any;
+
+  getAlertMetadata() {
+    this.isIntercepted = 0;
+    this.isDamage = 0;
+    this.isCasualties = 0;
+    this.isTrueAlert = 0;
+    this.didVote = {isIntercepted: false, isDamage: false, isCasualties: false, isTrueAlert: false};
+  }
 
   initMap() {
     if (!this.locationsService.isEquals(this.cities)) {
@@ -97,9 +111,19 @@ export class AlertPage {
     });
   }
 
-
   ionViewDidEnter() {
     this.initMap();
+  }
+
+  voteProperty(propertyName) {
+    if (this.didVote[propertyName]) {
+      this.didVote[propertyName] = false;
+      this[propertyName]--;
+    }
+    else {
+      this.didVote[propertyName] = true;
+      this[propertyName]++;
+    }
   }
 
 
