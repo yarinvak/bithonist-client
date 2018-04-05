@@ -1,0 +1,81 @@
+<style>
+  .list-md + ion-list ion-list-header{
+    margin-top: 0 !important;
+  }
+  .list-header-md{
+    margin-bottom: 0 !important;
+  }
+</style>
+<ion-toolbar [hidden]="isShowUpdate" style="text-align:center;">
+  <img src="assets/images/missile.png" height="20" style="padding-left:10px;  vertical-align:middle;">
+  <span><b>{{alertInfo.missiles}}</b> שוגרו</span>
+  <span [hidden]="!alertInfo.isIntercepted"><img src="assets/images/shield-secured.png" height="20" style="padding-left:10px; padding-right: 10px; vertical-align:middle;"> <b>יורט</b></span>
+  <span [hidden]="alertInfo.isIntercepted"><img src="assets/images/shield-not.png" height="20" style="padding-left:10px; padding-right: 10px; vertical-align:middle"> <b>לא יורט</b></span>
+  <img [hidden]="alertInfo.casualtiesNumber==0" src="assets/images/people.png" height="20" style="padding-left: 10px; padding-right: 10px; vertical-align:middle">
+  <img [hidden]="alertInfo.casualtiesNumber>0" src="assets/images/people-ok.png" height="20" style="padding-left: 10px; padding-right: 10px; vertical-align:middle">
+  <b>{{alertInfo.casualtiesNumber}}</b> נפגעים
+  <img [hidden]="!alertInfo.isApproved" src="assets/images/approve-symbol.png" style="vertical-align: middle; padding-right:10px;" height="20">
+  <a [hidden]="alertInfo.isApproved" (click)="sendUpdate()" style="padding-right: 10px;">שלח עדכון</a>
+</ion-toolbar>
+<ion-list [hidden]="!isShowUpdate">
+  <ion-item>
+    <ion-label color="primary"><img src="assets/images/missile.png" height="20" style="vertical-align:middle;"> כמות שיגורים</ion-label>
+    <ion-input [(ngModel)]="update.missiles" placeholder="כמות שיגורים"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label [hidden]="!update.isIntercepted" color="primary"><img src="assets/images/shield-secured.png" height="20" style="vertical-align:middle;"> יורט על ידי צה"ל</ion-label>
+    <ion-label [hidden]="update.isIntercepted" color="primary"><img src="assets/images/shield-not.png" height="20" style="vertical-align:middle;"> לא יורט</ion-label>
+    <ion-checkbox item-right="" [(ngModel)]="update.isIntercepted"></ion-checkbox>
+  </ion-item>
+  <ion-item>
+    <ion-label color="primary"><img src="assets/images/people.png" height="20" style="vertical-align:middle;"> כמות נפגעים</ion-label>
+    <ion-input [(ngModel)]="update.casualtiesNumber"  placeholder="כמות נפגעים"></ion-input>
+  </ion-item>
+  <ion-item>
+    <button ion-button full (click)="postUpdate()">שלח עדכון</button>
+  </ion-item>
+</ion-list>
+
+
+<!--<button type="submit" [hidden]="isShowComments" ion-button full (click)="addComment()">הוסף תגובה</button>-->
+<!--<ion-list>-->
+  <!--<ion-list-header>-->
+    <!--<span>עדכונים אחרונים</span>-->
+  <!--</ion-list-header>-->
+  <!--<div *ngIf="isLoading" style="text-align: center">-->
+    <!--<img src="assets/images/loading.gif" width="100"><br>-->
+    <!--<b><h3>טוען עדכונים..</h3></b>-->
+  <!--</div>-->
+  <!--<div *ngIf="!isLoading && errorMessage">-->
+    <!--{{errorMessage}}-->
+  <!--</div>-->
+  <!--<ion-item *ngFor="let comment of getImportantComments(true)">-->
+    <!--<ion-icon name="megaphone" style="color: red" item-left></ion-icon>-->
+    <!--<span>{{comment.content}}</span><br>-->
+    <!--<small><p>{{comment.writer}} | {{comment.date| date: 'dd/MM/yyyy HH:mm'}}</p></small>-->
+  <!--</ion-item>-->
+<!--</ion-list>-->
+<ion-list style="margin-top:10px">
+  <ion-list-header>
+    <span>תגובות אחרונות</span>
+  </ion-list-header>
+  <ion-item [hidden]="isShowComments" (click)="addComment()">
+    <ion-icon item-left><img src="assets/images/addComment.png" height="25"></ion-icon>
+    <span>הוסף תגובה</span>
+    <small><p>הגב עם עדכונים על האזעקה או התחושות שלך</p></small>
+  </ion-item>
+  <ion-item [hidden]="!isShowComments">
+    <ion-icon item-left><img src="assets/images/addComment.png" height="25"></ion-icon>
+    <ion-input [(ngModel)]="comment.content" placeholder="הכנס את תוכן התגובה"></ion-input>
+    <button ion-button clear item-right (click)="postComment()">שלח תגובה</button>
+    <button ion-button clear item-right (click)="cancelComment()">ביטול</button>
+
+  </ion-item>
+
+  <ion-item *ngFor="let comment of getImportantComments(false)">
+    <ion-icon item-left><img src="assets/images/chat.png" height="25"></ion-icon>
+    <span>{{comment.content}}</span><br>
+    <small><p>{{comment.writer}} | {{comment.date| date: 'dd/MM/yyyy HH:mm'}}</p></small>
+  </ion-item>
+
+</ion-list>

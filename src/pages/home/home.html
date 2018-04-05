@@ -1,17 +1,36 @@
-<ion-header>
-  <ion-navbar>
-    <ion-title>Home</ion-title>
+<ion-header dir="rtl">
+  <ion-navbar color="dark">
+    <ion-title>
+      <img align="right" src="assets/images/icon.png" width="30" style="margin-left: 5px">
+      <span color="light">בטחוניסט- אזעקות והתראות</span>
+    </ion-title>
   </ion-navbar>
+  <ion-toolbar>
+    <ion-searchbar placeholder="חפש לפי עיר" (ionInput)="getAlerts($event)"></ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
+<ion-content dir="rtl">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list [virtualScroll]="filtered_alerts">
+    <ion-list-header>
+      <span>התראות אחרונות</span>
+    </ion-list-header>
+    <ion-item *virtualItem="let alert" (click)="openMap(alert)">
+        <ion-icon name="alert" style="color: red" item-left></ion-icon>
+      <h2><b>{{alert.region}}</b></h2>
+      <h3>{{alert.cities}}</h3>
+      <p>{{alert.time}} להכנס למרחב מוגן<br>{{alert.date| date: 'dd/MM/yyyy HH:mm'}}</p>
+    </ion-item>
+  </ion-list>
+  <ion-item *ngIf="isLoading" style="text-align: center">
+    <img src="assets/images/loading.gif" width="100">
+  </ion-item>
+  <ion-item *ngIf="filtered_alerts==null || filtered_alerts.length==0">
+    <h3><b>אין התראות להצגה</b></h3>
+    <h4>נסה לרענן בהמשך</h4>
+  </ion-item>
+
 </ion-content>

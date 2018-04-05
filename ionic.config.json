@@ -1,7 +1,20 @@
 {
-  "name": "myApp",
-  "app_id": "",
-  "type": "ionic-angular",
+  "name": "בטחוניסט",
+  "app_id": "b661a93a",
+  "proxies": [
+    {
+      "path": "/api",
+      "proxyUrl": "http://www.oref.org.il//Shared/Ajax/GetAlarms.aspx"
+    },
+    {
+      "path": "/comments",
+      "proxyUrl": "http://localhost:8002/comments"
+    },
+    {
+      "path": "/alerts",
+      "proxyUrl": "http://localhost:8002/alerts"
+    }
+  ],  "type": "ionic-angular",
   "integrations": {
     "cordova": {}
   }

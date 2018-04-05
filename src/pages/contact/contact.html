@@ -1,17 +1,28 @@
-<ion-header>
-  <ion-navbar>
+<ion-header dir="rtl">
+  <ion-navbar color="dark">
     <ion-title>
-      Contact
+      <img align="right" src="assets/images/icon.png" width="30" style="margin-left: 5px">
+      <span color="light">בטחוניסט- הגדרות</span>
     </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content>
+<ion-content dir="rtl">
   <ion-list>
-    <ion-list-header>Follow us on Twitter</ion-list-header>
-    <ion-item>
-      <ion-icon name="ionic" item-start></ion-icon>
-      @ionicframework
+    <ion-list-header>פרטי משתמש</ion-list-header>
+    <ion-item *ngIf="isLogging" style="text-align: center">
+      <img src="assets/images/loading.gif" width="100">
+    </ion-item>
+    <ion-item *ngIf="!isLoggedOn">
+      <button ion-button clear (click)="login()">התחבר באמצעות Google</button>
+    </ion-item>
+    <ion-item *ngIf="isLoggedOn && user">
+      <ion-avatar item-left>
+        <img width="30" src="{{user.picture}}"/>
+      </ion-avatar>
+      <h1>{{user.name}}</h1>
+      <span>{{user.email}}</span>
+      <button ion-button clear (click)="logout()">התנתק</button>
     </ion-item>
   </ion-list>
 </ion-content>
