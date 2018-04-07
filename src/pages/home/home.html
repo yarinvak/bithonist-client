@@ -1,5 +1,5 @@
 <ion-header dir="rtl">
-  <ion-navbar color="dark">
+  <ion-navbar color="danger">
     <ion-title>
       <img align="right" src="assets/images/icon.png" width="30" style="margin-left: 5px">
       <span color="light">בטחוניסט - אזעקות והתראות</span>
@@ -19,7 +19,7 @@
       <span>התראות אחרונות</span>
     </ion-list-header>
     <ion-item *virtualItem="let alert" (click)="openMap(alert)">
-        <ion-icon name="alert" style="color: red" item-left></ion-icon>
+        <ion-icon name="megaphone"  item-right></ion-icon>
       <h2><b>{{alert.region}}</b></h2>
       <h3>{{alert.cities}}</h3>
       <p>{{alert.time}} להכנס למרחב מוגן<br>{{alert.date| date: 'dd/MM/yyyy HH:mm'}}</p>

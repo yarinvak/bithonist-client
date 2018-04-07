@@ -1,64 +1,44 @@
 import {Component} from '@angular/core';
 
-import {NavController} from 'ionic-angular';
 
 import {LoginService} from '../../app/services/LoginService';
 
+import {SocialSharing} from '@ionic-native/social-sharing';
+
 @Component({
   selector: 'page-contact',
-  templateUrl: 'contact.html',
-  providers: [LoginService]
+  templateUrl: 'contact.html'
 })
 export class ContactPage {
 
-  constructor(public navCtrl: NavController, public loginService: LoginService) {
-    if (this.loginService.getGoogleAccount() != null)
-      this.loginService.getGoogleAccount().then(data => {
-        this.user = data;
-        this.isLoggedOn = true;
-      }, error => {
-        this.user = null;
-        this.isLoggedOn = false;
-      });
+  constructor(private socialSharing: SocialSharing, private loginService: LoginService) {
+    // loginService.silentLogin((user) => {
+    //   this.isLoggedIn = true;
+    //   this.loggedInUser = user;
+    // }, (err) => {
+    //   this.isLoggedIn = false;
+    // });
   }
 
-  user: any;
-  isLogging = false;
-  isLoggedOn: boolean;
+  isLoggedIn: Boolean;
+  loggedInUser: any;
 
-  login() {
-    this.isLogging = true;
-    this.loginService.doLogin(() => {
-      this.isLogging = false;
-      if (this.loginService.getGoogleAccount() != null) {
-        this.loginService.getGoogleAccount().then(data => {
-          this.user = data;
-          this.isLoggedOn = true;
-        }, error => {
-          this.user = null;
-          this.isLoggedOn = false;
-          this.isLogging = false;
-          alert('ההתחברות נכשלה');
-
-        });
-      }
-    }, () => {
-      this.user = null;
-      this.isLoggedOn = false;
-      this.isLogging = false;
-      alert('ההתחברות נכשלה');
-    });
-
+  openDeveloperPage() {
+    window.open('https://play.google.com/store/apps/dev?id=8763833280417205032', '_blank', 'location=yes');
   }
 
-  logout() {
-    this.isLogging = true;
-    this.loginService.doGoogleLogout(() => {
-      this.isLogging = false;
-      this.isLoggedOn = false;
-      this.user = null;
-    });
-
+  share() {
+    this.socialSharing.share('הורידו עכשיו את האפליקציה החדשה שתתריע לכם על זמני כניסת השבת והחג! שווה הורדה לכל הציבור הדתי ושומר המסורת! עכשיו בחנות האפליקציות של גוגל: https://play.google.com/store/apps/details?id=com.ydev.shabbat', 'זמני כניסת שבת וחג- הורידו עכשיו!', null).then(() => console.log('success sharing'),
+      (err) => console.log('err sharing:' + err));
   }
 
+  // googleLogin() {
+  //   this.loginService.login((user) => {
+  //     this.isLoggedIn = true;
+  //     this.loggedInUser = user;
+  //   }, (err) => {
+  //     this.isLoggedIn = false;
+  //     alert(err);
+  //   });
+  // }
 }

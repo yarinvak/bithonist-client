@@ -18,6 +18,9 @@ import {LocationsService} from "./services/LocationsService";
 import {LoginService} from "./services/LoginService";
 import {AlertsService} from './services/AlertsService';
 
+import {SocialSharing} from '@ionic-native/social-sharing';
+
+
 @NgModule({
   declarations: [
     MyApp,
@@ -55,6 +58,7 @@ import {AlertsService} from './services/AlertsService';
     LocationsService,
     LoginService,
     AlertsService,
+    SocialSharing,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

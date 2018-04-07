@@ -1,5 +1,5 @@
 <ion-header dir="rtl">
-  <ion-navbar color="dark">
+  <ion-navbar color="danger">
     <ion-title>
       <img align="right" src="assets/images/icon.png" width="30" style="margin-left: 5px">
       <span color="light">בטחוניסט - הגדרות</span>
@@ -8,21 +8,26 @@
 </ion-header>
 
 <ion-content dir="rtl">
-  <ion-list>
-    <ion-list-header>פרטי משתמש</ion-list-header>
-    <ion-item *ngIf="isLogging" style="text-align: center">
-      <img src="assets/images/loading.gif" width="100">
-    </ion-item>
-    <ion-item *ngIf="!isLoggedOn">
-      <button ion-button clear (click)="login()">התחבר באמצעות Google</button>
-    </ion-item>
-    <ion-item *ngIf="isLoggedOn && user">
-      <ion-avatar item-left>
-        <img width="30" src="{{user.picture}}"/>
-      </ion-avatar>
-      <h1>{{user.name}}</h1>
-      <span>{{user.email}}</span>
-      <button ion-button clear (click)="logout()">התנתק</button>
-    </ion-item>
-  </ion-list>
+  <ion-item *ngIf="!isLoggedIn" (click)="googleLogin()">
+    <ion-icon name="logo-google" item-left></ion-icon>
+    התחבר באמצעות Google
+  </ion-item>
+  <ion-item *ngIf="isLoggedIn">
+    <ion-icon name="logo-google" item-left></ion-icon>
+    ברוך הבא {{loggedInUser.displayName}}
+  </ion-item>
+  <ion-item (click)="share()">
+    <ion-icon name="share" item-left></ion-icon>
+    שתף את האפליקציה
+
+  </ion-item>
+  <ion-item>
+    <ion-icon name="star" item-left></ion-icon>
+    נהנה מהאפליקציה? דרג אותנו!
+  </ion-item>
+  <ion-item (click)="openDeveloperPage()">
+    <ion-icon name="git-branch" item-left></ion-icon>
+    פותח ע"י:
+    <b>Ydev Applications</b>
+  </ion-item>
 </ion-content>
