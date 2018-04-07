@@ -2,13 +2,9 @@ import {Component, ViewChild, EventEmitter, Output} from '@angular/core';
 
 import {NavController} from 'ionic-angular';
 
-import {AlertController} from 'ionic-angular';
-
 import {List} from 'ionic-angular';
 
 import {LocationsService} from "../../app/services/LocationsService";
-
-import {Storage} from '@ionic/storage';
 
 import {AlertPage} from '../map/alert'
 
@@ -17,6 +13,7 @@ import {Platform} from 'ionic-angular';
 import {HttpClient} from '@angular/common/http';
 
 import {AlertsService} from '../../app/services/AlertsService';
+import {LoginService} from "../../app/services/LoginService";
 
 declare let $: any;
 
@@ -30,13 +27,14 @@ export class HomePage {
   @ViewChild(List) list: List;
   @Output() changeLocations = new EventEmitter();
 
-  constructor(private platform: Platform, public navCtrl: NavController, private alertCtrl: AlertController,
+  constructor(private platform: Platform, public navCtrl: NavController, private loginService: LoginService,
               private http: HttpClient, private locationsService: LocationsService, private alertsService: AlertsService) {
     if (platform.is('core')) {
       this.history_url = '/api';
     }
 
     this.http = http;
+    this.loginService.silentLogin(()=>{}, ()=>{});
   }
 
   alerts_url = "http://www.oref.org.il/WarningMessages/Alert/alerts.json";

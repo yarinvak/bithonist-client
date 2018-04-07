@@ -8,13 +8,13 @@
 </ion-header>
 
 <ion-content dir="rtl">
-  <ion-item *ngIf="!isLoggedIn" (click)="googleLogin()">
+  <ion-item *ngIf="!loginService.isLoggedIn" (click)="googleLogin()">
     <ion-icon name="logo-google" item-left></ion-icon>
     התחבר באמצעות Google
   </ion-item>
-  <ion-item *ngIf="isLoggedIn" (click)="googleLogout()">
+  <ion-item *ngIf="loginService.isLoggedIn" (click)="googleLogout()">
     <ion-icon name="logo-google" item-left></ion-icon>
-    ברוך הבא {{loggedInUser.displayName}}
+    ברוך הבא {{loginService.user.displayName}}
     <small item-right>לחץ להתנתקות</small>
   </ion-item>
   <ion-item (click)="share()">

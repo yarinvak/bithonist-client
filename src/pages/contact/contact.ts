@@ -11,17 +11,9 @@ import {SocialSharing} from '@ionic-native/social-sharing';
 })
 export class ContactPage {
 
-  constructor(private socialSharing: SocialSharing, private loginService: LoginService) {
-    loginService.silentLogin((user) => {
-      this.isLoggedIn = true;
-      this.loggedInUser = user;
-    }, (err) => {
-      this.isLoggedIn = false;
-    });
+  constructor(private socialSharing: SocialSharing, public loginService: LoginService) {
   }
 
-  isLoggedIn: Boolean;
-  loggedInUser: any;
 
   openDeveloperPage() {
     window.open('https://play.google.com/store/apps/dev?id=8763833280417205032', '_blank', 'location=yes');
@@ -34,17 +26,13 @@ export class ContactPage {
 
   googleLogin() {
     this.loginService.login((user) => {
-      this.isLoggedIn = true;
-      this.loggedInUser = user;
     }, (err) => {
-      this.isLoggedIn = false;
       alert(err);
     });
   }
 
   googleLogout() {
     this.loginService.logout();
-    this.isLoggedIn = false;
-    this.loggedInUser = null;
   }
+
 }

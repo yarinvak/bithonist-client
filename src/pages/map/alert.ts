@@ -1,9 +1,10 @@
 import {Component} from '@angular/core';
 
-import {NavController} from 'ionic-angular';
+import {AlertController, NavController} from 'ionic-angular';
 
 import {} from '@types/googlemaps';
 import {LocationsService} from "../../app/services/LocationsService";
+import {LoginService} from "../../app/services/LoginService";
 
 // import {Screenshot, GooglePlus, NativeStorage} from 'ionic-native';
 // import {SocialSharing} from 'ionic-native';
@@ -17,8 +18,8 @@ declare let google: any;
 
 export class AlertPage {
 
-  constructor(public navCtrl: NavController,
-              private locationsService: LocationsService) {
+  constructor(private popUpCtrl: AlertController,
+              private locationsService: LocationsService, private loginService: LoginService) {
     this.getAlertMetadata();
   }
 
@@ -115,14 +116,41 @@ export class AlertPage {
     this.initMap();
   }
 
+  presentLoginPopup() {
+    let popup = this.popUpCtrl.create({
+        title: 'התחברות נדרשת',
+        subTitle: 'בכדי לדווח פרטים על אזעקות עליך להתחבר לחשבון הגוגל שלך',
+        buttons: [
+          {
+            text: 'התחבר', role: 'login', handler: () => {
+            this.loginService.login(() => {
+            }, (err) => {
+              alert(err);
+            });
+          }
+          },
+          {
+            text: 'בטל', role: 'dismiss'
+          }
+        ]
+      })
+    ;
+    popup.present();
+  }
+
   voteProperty(propertyName) {
-    if (this.didVote[propertyName]) {
-      this.didVote[propertyName] = false;
-      this[propertyName]--;
+    if (this.loginService.isLoggedIn) {
+      if (this.didVote[propertyName]) {
+        this.didVote[propertyName] = false;
+        this[propertyName]--;
+      }
+      else {
+        this.didVote[propertyName] = true;
+        this[propertyName]++;
+      }
     }
     else {
-      this.didVote[propertyName] = true;
-      this[propertyName]++;
+      this.presentLoginPopup();
     }
   }
 
