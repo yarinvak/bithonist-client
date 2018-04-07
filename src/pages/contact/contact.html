@@ -12,9 +12,10 @@
     <ion-icon name="logo-google" item-left></ion-icon>
     התחבר באמצעות Google
   </ion-item>
-  <ion-item *ngIf="isLoggedIn">
+  <ion-item *ngIf="isLoggedIn" (click)="googleLogout()">
     <ion-icon name="logo-google" item-left></ion-icon>
     ברוך הבא {{loggedInUser.displayName}}
+    <small item-right>לחץ להתנתקות</small>
   </ion-item>
   <ion-item (click)="share()">
     <ion-icon name="share" item-left></ion-icon>

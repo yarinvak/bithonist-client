@@ -12,12 +12,12 @@ import {SocialSharing} from '@ionic-native/social-sharing';
 export class ContactPage {
 
   constructor(private socialSharing: SocialSharing, private loginService: LoginService) {
-    // loginService.silentLogin((user) => {
-    //   this.isLoggedIn = true;
-    //   this.loggedInUser = user;
-    // }, (err) => {
-    //   this.isLoggedIn = false;
-    // });
+    loginService.silentLogin((user) => {
+      this.isLoggedIn = true;
+      this.loggedInUser = user;
+    }, (err) => {
+      this.isLoggedIn = false;
+    });
   }
 
   isLoggedIn: Boolean;
@@ -32,13 +32,19 @@ export class ContactPage {
       (err) => console.log('err sharing:' + err));
   }
 
-  // googleLogin() {
-  //   this.loginService.login((user) => {
-  //     this.isLoggedIn = true;
-  //     this.loggedInUser = user;
-  //   }, (err) => {
-  //     this.isLoggedIn = false;
-  //     alert(err);
-  //   });
-  // }
+  googleLogin() {
+    this.loginService.login((user) => {
+      this.isLoggedIn = true;
+      this.loggedInUser = user;
+    }, (err) => {
+      this.isLoggedIn = false;
+      alert(err);
+    });
+  }
+
+  googleLogout() {
+    this.loginService.logout();
+    this.isLoggedIn = false;
+    this.loggedInUser = null;
+  }
 }

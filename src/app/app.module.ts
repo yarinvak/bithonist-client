@@ -19,7 +19,7 @@ import {LoginService} from "./services/LoginService";
 import {AlertsService} from './services/AlertsService';
 
 import {SocialSharing} from '@ionic-native/social-sharing';
-
+import {GooglePlus} from '@ionic-native/google-plus';
 
 @NgModule({
   declarations: [
@@ -59,6 +59,7 @@ import {SocialSharing} from '@ionic-native/social-sharing';
     LoginService,
     AlertsService,
     SocialSharing,
+    GooglePlus,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
