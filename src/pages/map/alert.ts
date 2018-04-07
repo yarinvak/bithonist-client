@@ -5,6 +5,7 @@ import {AlertController, NavController} from 'ionic-angular';
 import {} from '@types/googlemaps';
 import {LocationsService} from "../../app/services/LocationsService";
 import {LoginService} from "../../app/services/LoginService";
+import {AlertsService} from "../../app/services/AlertsService";
 
 // import {Screenshot, GooglePlus, NativeStorage} from 'ionic-native';
 // import {SocialSharing} from 'ionic-native';
@@ -19,27 +20,17 @@ declare let google: any;
 export class AlertPage {
 
   constructor(private popUpCtrl: AlertController,
-              private locationsService: LocationsService, private loginService: LoginService) {
-    this.getAlertMetadata();
+              private locationsService: LocationsService, private loginService: LoginService, private alertsService: AlertsService) {
+    this.alert = locationsService.alert;
+
   }
 
   viewChoose = 'map';
   cities = [];
   region = '';
 
-  isIntercepted: number;
-  isDamage: number;
-  isCasualties: number;
-  isTrueAlert: number;
-  didVote: any;
+  alert: any;
 
-  getAlertMetadata() {
-    this.isIntercepted = 0;
-    this.isDamage = 0;
-    this.isCasualties = 0;
-    this.isTrueAlert = 0;
-    this.didVote = {isIntercepted: false, isDamage: false, isCasualties: false, isTrueAlert: false};
-  }
 
   initMap() {
     if (!this.locationsService.isEquals(this.cities)) {
@@ -114,6 +105,7 @@ export class AlertPage {
 
   ionViewDidEnter() {
     this.initMap();
+    this.alertsService.getAlertMetaData(this.alert);
   }
 
   presentLoginPopup() {
@@ -140,19 +132,31 @@ export class AlertPage {
 
   voteProperty(propertyName) {
     if (this.loginService.isLoggedIn) {
-      if (this.didVote[propertyName]) {
-        this.didVote[propertyName] = false;
-        this[propertyName]--;
+      if (this.didVote(propertyName)) {
+        this.removeVote(propertyName);
       }
       else {
-        this.didVote[propertyName] = true;
-        this[propertyName]++;
+        this.addVote(propertyName);
       }
+      this.alertsService.updateAlert(this.alert);
     }
     else {
       this.presentLoginPopup();
     }
   }
 
+  addVote(propertyName) {
+    this.alert.metadata[propertyName].voters.push(this.loginService.user.userId);
+    this.alert.metadata[propertyName].count++;
+  }
+
+  removeVote(propertyName) {
+    this.alert.metadata[propertyName].voters = this.alert.metadata[propertyName].voters.filter(x => x != this.loginService.user.userId);
+    this.alert.metadata[propertyName].count--;
+  }
+
+  didVote(propertyName) {
+    return (this.alert.metadata[propertyName].voters.filter(x => x === this.loginService.user.userId).length > 0);
+  }
 
 }

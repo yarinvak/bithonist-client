@@ -28,19 +28,27 @@ export class HomePage {
   @Output() changeLocations = new EventEmitter();
 
   constructor(private platform: Platform, public navCtrl: NavController, private loginService: LoginService,
-              private http: HttpClient, private locationsService: LocationsService, private alertsService: AlertsService) {
+              private http: HttpClient, private locationsService: LocationsService, public alertsService: AlertsService) {
     if (platform.is('core')) {
       this.history_url = '/api';
     }
 
     this.http = http;
-    this.loginService.silentLogin(()=>{}, ()=>{});
+    this.loginService.silentLogin(() => {
+    }, () => {
+    });
+
+    this.http.get('assets/regions.json')
+      .subscribe(data => {
+        this.regions = data;
+        this.readHistory(null);
+      }, err => console.log(err));
   }
 
   alerts_url = "http://www.oref.org.il/WarningMessages/Alert/alerts.json";
-
   history_url = "http://www.oref.org.il//Shared/Ajax/GetAlarms.aspx";
-  alerts = [];
+
+  // alerts = [];
   filtered_alerts = [];
   regions: any;
   isLoading = false;
@@ -51,20 +59,19 @@ export class HomePage {
     let dateString = date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
     this.http.get(this.history_url + '?lang=he&fromDate=01.06.2015&toDate=' + dateString, {responseType: "text"}).subscribe(
       data => this.parseData(data), err => {
-        this.alerts = [];
+        // this.alerts = [];
         alert('שגיאה בקריאת היסטוריית האזעקות- בדוק את חיבור הרשת שלך, או דווח לנו על התקלה');
         this.isLoading = false;
       }, () => {
         console.log('completed reading history');
         if (refresher) refresher.complete();
         this.isLoading = false;
-        this.alertsService.setAlerts(this.alerts);
       }
     );
   }
 
-  getAlerts(ev: any) {
-    this.filtered_alerts = this.alerts.map(x => x);
+  filterAlerts(ev: any) {
+    this.filtered_alerts = this.alertsService.alerts.map(x => x);
     let val = ev.target.value;
     if (val && val.trim() != '') {
       this.filtered_alerts = this.filtered_alerts.filter((item) => {
@@ -78,6 +85,7 @@ export class HomePage {
     let dom = document.createElement('html');
     dom.innerHTML = res;
     let alerts_info = dom.getElementsByTagName('li');
+    let alerts = [];
     for (let i = 0; i < alerts_info.length; i++) {
       let dateArr = alerts_info[i].children[0].textContent.split('.');
       let hourArr = alerts_info[i].children[1].textContent.split(':');
@@ -90,9 +98,16 @@ export class HomePage {
       let date = new Date(year, month, day, hour, minutes);
       let cities = this.getCitiesByRegionName(region);
       let time_to_shelter = this.getTimeByRegionName(region);
-      this.alerts.push({region: region, date: date, cities: cities, time: time_to_shelter});
+      alerts.push({
+        region: region,
+        date: date,
+        cities: cities,
+        time: time_to_shelter,
+        metadata: {isTrueAlert: {count:0, voters:[]}, isIntercepted: {count:0, voters:[]}, isDamage: {count:0, voters:[]}, isCasualties: {count:0, voters:[]}}
+      });
     }
-    this.filtered_alerts = this.alerts;
+    this.filtered_alerts = alerts;
+    this.alertsService.setAlerts(alerts);
   }
 
   getCitiesByRegionName(regionName) {
@@ -114,9 +129,8 @@ export class HomePage {
 
 
   openMap(alert) {
+    console.log(alert);
     this.locationsService.setAlert(alert);
-    // this.locationsService.cities = alert.cities;
-    // this.locationsService.region = alert.region.replace(/[0-9]/g, '');
     this.changeLocations.emit(null);
     this.navCtrl.push(AlertPage);
   }
@@ -130,10 +144,6 @@ export class HomePage {
   }
 
   ionViewDidEnter() {
-    this.http.get('assets/regions.json')
-      .subscribe(data => {
-        this.regions = data;
-        this.readHistory(null);
-      }, err => console.log(err));
+
   }
 }

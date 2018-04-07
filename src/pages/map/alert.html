@@ -38,21 +38,21 @@
 
 <ion-content dir="rtl">
   <div class="buttonContainer">
-    <button ion-button (click)="voteProperty('isIntercepted')" round [color]="didVote.isIntercepted? 'primary' : 'light'">
+    <button ion-button (click)="voteProperty('isIntercepted')" round [color]="didVote('isIntercepted')? 'primary' : 'light'">
       נשמע יירוט
-      <ion-badge color="danger" *ngIf="isIntercepted>0">{{isIntercepted}}</ion-badge>
+      <ion-badge color="danger" *ngIf="alert.metadata.isIntercepted.count>0">{{alert.metadata.isIntercepted.count}}</ion-badge>
     </button>
-    <button ion-button (click)="voteProperty('isCasualties')" round [color]="didVote.isCasualties? 'primary' : 'light'">
+    <button ion-button (click)="voteProperty('isCasualties')" round [color]="didVote('isCasualties')? 'primary' : 'light'">
       יש נפגעים
-      <ion-badge color="danger" *ngIf="isCasualties>0">{{isCasualties}}</ion-badge>
+      <ion-badge color="danger" *ngIf="alert.metadata.isCasualties.count>0">{{alert.metadata.isCasualties.count}}</ion-badge>
     </button>
-    <button ion-button (click)="voteProperty('isDamage')" round [color]="didVote.isDamage? 'primary' : 'light'">
+    <button ion-button (click)="voteProperty('isDamage')" round [color]="didVote('isDamage')? 'primary' : 'light'">
       נגרם נזק
-      <ion-badge color="danger" *ngIf="isDamage>0">{{isDamage}}</ion-badge>
+      <ion-badge color="danger" *ngIf="alert.metadata.isDamage.count>0">{{alert.metadata.isDamage.count}}</ion-badge>
     </button>
-    <button ion-button (click)="voteProperty('isTrueAlert')" round [color]="didVote.isTrueAlert? 'primary' : 'light'">
+    <button ion-button (click)="voteProperty('isTrueAlert')" round [color]="didVote('isTrueAlert')? 'primary' : 'light'">
       אזעקת אמת
-      <ion-badge color="danger" *ngIf="isTrueAlert>0">{{isTrueAlert}}</ion-badge>
+      <ion-badge color="danger" *ngIf="alert.metadata.isTrueAlert.count>0">{{alert.metadata.isTrueAlert.count}}</ion-badge>
     </button>
   </div>
   <div id="map" [hidden]="viewChoose!='map'"></div>
