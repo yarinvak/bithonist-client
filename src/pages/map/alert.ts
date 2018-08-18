@@ -58,9 +58,9 @@ export class AlertPage {
           (err) => console.log('err sharing:' + err));
       }
       , (err) => console.log('error screenshot:' + err));
-    this.screenshot.URI(80).then((uri) => {
-      this.socialSharing.share(this.cities.toString(), 'אזעקה ב' + this.region, uri.URI).then(() => console.log('success sharing'), (err) => console.log('error sharing:' + err));
-    }, () => console.log('err'));
+    // this.screenshot.URI(80).then((uri) => {
+    //   this.socialSharing.share(this.cities.toString(), 'אזעקה ב' + this.region, uri.URI).then(() => console.log('success sharing'), (err) => console.log('error sharing:' + err));
+    // }, () => console.log('err'));
   }
 
   searchAddress(geocoder, map, cities, region, i, next) {
