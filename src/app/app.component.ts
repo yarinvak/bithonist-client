@@ -25,6 +25,7 @@ export class MyApp {
         // Vibration.vibrate(1000);
       };
       if (window["plugins"]) {
+        console.log(window["plugins"]);
         window["plugins"].OneSignal
           .startInit("482b9bc7-68a6-4e85-a6bd-54f65618b3bf", "1075460896490")
           .handleNotificationOpened(notificationOpenedCallback)

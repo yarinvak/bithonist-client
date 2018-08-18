@@ -1,14 +1,14 @@
 import {Component} from '@angular/core';
 
-import {AlertController, NavController} from 'ionic-angular';
+import {AlertController} from 'ionic-angular';
 
 import {} from '@types/googlemaps';
 import {LocationsService} from "../../app/services/LocationsService";
 import {LoginService} from "../../app/services/LoginService";
 import {AlertsService} from "../../app/services/AlertsService";
 
-// import {Screenshot, GooglePlus, NativeStorage} from 'ionic-native';
-// import {SocialSharing} from 'ionic-native';
+import {Screenshot} from '@ionic-native/screenshot';
+import {SocialSharing} from '@ionic-native/social-sharing';
 
 declare let google: any;
 
@@ -20,8 +20,11 @@ declare let google: any;
 export class AlertPage {
 
   constructor(private popUpCtrl: AlertController,
-              private locationsService: LocationsService, private loginService: LoginService, private alertsService: AlertsService) {
+              private locationsService: LocationsService, private loginService: LoginService, private alertsService: AlertsService, private socialSharing: SocialSharing,
+              private screenshot: Screenshot) {
     this.alert = locationsService.alert;
+    this.socialSharing = socialSharing;
+    this.screenshot = screenshot;
   }
 
   viewChoose = 'map';
@@ -29,8 +32,6 @@ export class AlertPage {
   region = '';
 
   alert: any;
-  // alertUpdate={};
-
 
   /**
    * Initializes map and location
@@ -52,14 +53,14 @@ export class AlertPage {
   }
 
   takeShot() {
-    // Screenshot.save().then((r) => {
-    //     SocialSharing.share(this.cities.toString(), 'אזעקה ב' + this.region, 'file://' + r.filePath).then(() => console.log('success sharing'),
-    //       (err) => console.log('err sharing:' + err));
-    //   }
-    //   , (err) => console.log('error screenshot:' + err));
-    // Screenshot.URI(80).then((uri) => {
-    //   SocialSharing.share(this.cities.toString(), 'אזעקה ב' + this.region, uri.URI).then(() => console.log('success sharing'), (err) => console.log('error sharing:'+err));
-    // }, () => console.log('err'));
+    this.screenshot.save().then((r) => {
+        this.socialSharing.share(this.cities.toString(), 'אזעקה ב' + this.region, 'file://' + r.filePath).then(() => console.log('success sharing'),
+          (err) => console.log('err sharing:' + err));
+      }
+      , (err) => console.log('error screenshot:' + err));
+    this.screenshot.URI(80).then((uri) => {
+      this.socialSharing.share(this.cities.toString(), 'אזעקה ב' + this.region, uri.URI).then(() => console.log('success sharing'), (err) => console.log('error sharing:' + err));
+    }, () => console.log('err'));
   }
 
   searchAddress(geocoder, map, cities, region, i, next) {
@@ -168,10 +169,10 @@ export class AlertPage {
   }
 
   didVote(propertyName) {
-    if (this.loginService.user!=null && this.loginService.user.userId != null) {
+    if (this.loginService.user != null && this.loginService.user.userId != null) {
       return (this.alert.metadata[propertyName].voters.filter(x => x === this.loginService.user.userId).length > 0);
     }
-    else{
+    else {
       return false;
     }
   }
