@@ -22,7 +22,6 @@ export class AlertPage {
   constructor(private popUpCtrl: AlertController,
               private locationsService: LocationsService, private loginService: LoginService, private alertsService: AlertsService) {
     this.alert = locationsService.alert;
-
   }
 
   viewChoose = 'map';
@@ -30,8 +29,12 @@ export class AlertPage {
   region = '';
 
   alert: any;
+  // alertUpdate={};
 
 
+  /**
+   * Initializes map and location
+   */
   initMap() {
     if (!this.locationsService.isEquals(this.cities)) {
       this.cities = this.locationsService.alert.cities;
@@ -134,11 +137,12 @@ export class AlertPage {
     if (this.loginService.isLoggedIn) {
       if (this.didVote(propertyName)) {
         this.removeVote(propertyName);
+        this.alertsService.updateAlert(this.alert, this.loginService.user.userId, propertyName, false);
       }
       else {
         this.addVote(propertyName);
+        this.alertsService.updateAlert(this.alert, this.loginService.user.userId, propertyName, true);
       }
-      this.alertsService.updateAlert(this.alert);
     }
     else {
       this.presentLoginPopup();
@@ -146,17 +150,29 @@ export class AlertPage {
   }
 
   addVote(propertyName) {
+    // Updating alert metadata
     this.alert.metadata[propertyName].voters.push(this.loginService.user.userId);
     this.alert.metadata[propertyName].count++;
+    // Updating alert update info for view use
+    // this.alertUpdate[propertyName].voter = this.loginService.user.userId;
+    // this.alertUpdate[propertyName].vote = 1; // stands for pro
   }
 
   removeVote(propertyName) {
+    // Updating alert metadata
     this.alert.metadata[propertyName].voters = this.alert.metadata[propertyName].voters.filter(x => x != this.loginService.user.userId);
     this.alert.metadata[propertyName].count--;
+    // Updating alert update info for view use
+    // this.alertUpdate[propertyName].voter = this.loginService.user.userId;
+    // this.alertUpdate[propertyName].vote = -1; // stands for ney
   }
 
   didVote(propertyName) {
-    return (this.alert.metadata[propertyName].voters.filter(x => x === this.loginService.user.userId).length > 0);
+    if (this.loginService.user!=null && this.loginService.user.userId != null) {
+      return (this.alert.metadata[propertyName].voters.filter(x => x === this.loginService.user.userId).length > 0);
+    }
+    else{
+      return false;
+    }
   }
-
 }

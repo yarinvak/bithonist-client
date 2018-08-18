@@ -1,6 +1,8 @@
 {
   "name": "בטחוניסט",
-  "app_id": "b661a93a",
+  "integrations": {
+    "cordova": {}
+  },
   "proxies": [
     {
       "path": "/api",
@@ -14,8 +16,7 @@
       "path": "/alerts",
       "proxyUrl": "http://localhost:8002/alerts"
     }
-  ],  "type": "ionic-angular",
-  "integrations": {
-    "cordova": {}
-  }
+  ],
+  "type": "ionic-angular",
+  "pro_id": "b661a93a"
 }

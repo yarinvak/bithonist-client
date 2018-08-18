@@ -45,19 +45,27 @@ export class HomePage {
       }, err => console.log(err));
   }
 
+  // consts
   alerts_url = "http://www.oref.org.il/WarningMessages/Alert/alerts.json";
   history_url = "http://www.oref.org.il//Shared/Ajax/GetAlarms.aspx";
 
-  // alerts = [];
+  // members
   filtered_alerts = [];
   regions: any;
   isLoading = false;
 
+  // methods
+
+  /**
+   * Reads alerts history on refresh
+   * @param refresher
+   */
   readHistory(refresher) {
     this.isLoading = true;
     let date = new Date();
     let dateString = date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
-    this.http.get(this.history_url + '?lang=he&fromDate=01.06.2015&toDate=' + dateString, {responseType: "text"}).subscribe(
+    this.http.get(this.history_url + '?lang=he&fromDate=01.06.2015&toDate=' + dateString, {responseType: "text"})
+      .subscribe(
       data => this.parseData(data), err => {
         // this.alerts = [];
         alert('שגיאה בקריאת היסטוריית האזעקות- בדוק את חיבור הרשת שלך, או דווח לנו על התקלה');
@@ -70,6 +78,10 @@ export class HomePage {
     );
   }
 
+  /**
+   * Filters alerts by city or any string
+   * @param ev
+   */
   filterAlerts(ev: any) {
     this.filtered_alerts = this.alertsService.alerts.map(x => x);
     let val = ev.target.value;
@@ -81,6 +93,10 @@ export class HomePage {
     }
   }
 
+  /**
+   * Parses the response into a list of alerts
+   * @param res
+   */
   parseData(res) {
     let dom = document.createElement('html');
     dom.innerHTML = res;
@@ -127,7 +143,10 @@ export class HomePage {
     }
   }
 
-
+  /**
+   * Opens alert map
+   * @param alert
+   */
   openMap(alert) {
     console.log(alert);
     this.locationsService.setAlert(alert);
@@ -135,15 +154,15 @@ export class HomePage {
     this.navCtrl.push(AlertPage);
   }
 
+  /**
+   * Refresh history
+   * @param refresher
+   */
   doRefresh(refresher) {
     console.log('Begin async operation', refresher);
     this.readHistory(refresher);
     setTimeout(() => {
       refresher.complete();
     }, 2000);
-  }
-
-  ionViewDidEnter() {
-
   }
 }
