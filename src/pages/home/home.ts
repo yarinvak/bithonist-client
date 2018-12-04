@@ -14,6 +14,7 @@ import {HttpClient} from '@angular/common/http';
 
 import {AlertsService} from '../../app/services/AlertsService';
 import {LoginService} from "../../app/services/LoginService";
+import {ApiService} from "../../app/services/ApiService";
 
 declare let $: any;
 
@@ -22,32 +23,19 @@ declare let $: any;
   templateUrl: 'home.html',
 })
 
-
 export class HomePage {
   @ViewChild(List) list: List;
   @Output() changeLocations = new EventEmitter();
 
-  constructor(private platform: Platform, public navCtrl: NavController, private loginService: LoginService,
-              private http: HttpClient, private locationsService: LocationsService, public alertsService: AlertsService) {
-    if (platform.is('core')) {
-      this.history_url = '/api';
-    }
-
+  constructor(public navCtrl: NavController, private loginService: LoginService,
+              private http: HttpClient, private locationsService: LocationsService, public alertsService: AlertsService, private api: ApiService) {
     this.http = http;
     this.loginService.silentLogin(() => {
     }, () => {
     });
-
-    this.http.get('assets/regions.json')
-      .subscribe(data => {
-        this.regions = data;
-        this.readHistory(null);
-      }, err => console.log(err));
+    this.resolveRegions();
+    this.readHistory(null);
   }
-
-  // consts
-  alerts_url = "http://www.oref.org.il/WarningMessages/Alert/alerts.json";
-  history_url = "http://www.oref.org.il//Shared/Ajax/GetAlarms.aspx";
 
   // members
   filtered_alerts = [];
@@ -55,34 +43,34 @@ export class HomePage {
   isLoading = false;
 
   // methods
-
   /**
    * Reads alerts history on refresh
    * @param refresher
    */
-  readHistory(refresher) {
+  public readHistory(refresher) {
     this.isLoading = true;
     let date = new Date();
     let dateString = date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
-    this.http.get(this.history_url + '?lang=he&fromDate=01.06.2015&toDate=' + dateString, {responseType: "text"})
+    let formerDateString = '01.01.' + (date.getFullYear() - 3);
+    this.http.get(this.api.getConfig().alertHistoryUrl + '?lang=he&fromDate=' + formerDateString + '&toDate=' + dateString, {responseType: "text"})
       .subscribe(
-      data => this.parseData(data), err => {
-        // this.alerts = [];
-        alert('שגיאה בקריאת היסטוריית האזעקות- בדוק את חיבור הרשת שלך, או דווח לנו על התקלה');
-        this.isLoading = false;
-      }, () => {
-        console.log('completed reading history');
-        if (refresher) refresher.complete();
-        this.isLoading = false;
-      }
-    );
+        data => this.parseData(data), err => {
+          // this.alerts = [];
+          alert('שגיאה בקריאת היסטוריית האזעקות- בדוק את חיבור הרשת שלך, או דווח לנו על התקלה');
+          this.isLoading = false;
+        }, () => {
+          console.log('completed reading history');
+          if (refresher) refresher.complete();
+          this.isLoading = false;
+        }
+      );
   }
 
   /**
    * Filters alerts by city or any string
    * @param ev
    */
-  filterAlerts(ev: any) {
+  public filterAlerts(ev: any) {
     this.filtered_alerts = this.alertsService.alerts.map(x => x);
     let val = ev.target.value;
     if (val && val.trim() != '') {
@@ -94,10 +82,41 @@ export class HomePage {
   }
 
   /**
+   * Opens alert map
+   * @param alert
+   */
+  public openMap(alert) {
+    console.log(alert);
+    this.locationsService.setAlert(alert);
+    this.changeLocations.emit(null);
+    this.navCtrl.push(AlertPage);
+  }
+
+  /**
+   * Refresh history
+   * @param refresher
+   */
+  public doRefresh(refresher) {
+    console.log('Begin async operation', refresher);
+    this.readHistory(refresher);
+    setTimeout(() => {
+      refresher.complete();
+    }, 2000);
+  }
+
+  private resolveRegions() {
+    this.http.get('assets/regions.json')
+      .subscribe(data => {
+        this.regions = data;
+        this.readHistory(null);
+      }, err => console.log(err));
+  }
+
+  /**
    * Parses the response into a list of alerts
    * @param res
    */
-  parseData(res) {
+  private parseData(res) {
     let dom = document.createElement('html');
     dom.innerHTML = res;
     let alerts_info = dom.getElementsByTagName('li');
@@ -119,14 +138,19 @@ export class HomePage {
         date: date,
         cities: cities,
         time: time_to_shelter,
-        metadata: {isTrueAlert: {count:0, voters:[]}, isIntercepted: {count:0, voters:[]}, isDamage: {count:0, voters:[]}, isCasualties: {count:0, voters:[]}}
+        metadata: {
+          isTrueAlert: {count: 0, voters: []},
+          isIntercepted: {count: 0, voters: []},
+          isDamage: {count: 0, voters: []},
+          isCasualties: {count: 0, voters: []}
+        }
       });
     }
     this.filtered_alerts = alerts;
     this.alertsService.setAlerts(alerts);
   }
 
-  getCitiesByRegionName(regionName) {
+  private getCitiesByRegionName(regionName) {
     if (this.regions) {
       let filteredRegions = this.regions.filter(x => x.region === regionName);
       if (filteredRegions.length > 0)
@@ -137,32 +161,9 @@ export class HomePage {
     }
   }
 
-  getTimeByRegionName(regionName) {
+  private getTimeByRegionName(regionName) {
     if (this.regions) {
       return this.regions.filter(x => x.region === regionName).map(x => x.time)[0];
     }
-  }
-
-  /**
-   * Opens alert map
-   * @param alert
-   */
-  openMap(alert) {
-    console.log(alert);
-    this.locationsService.setAlert(alert);
-    this.changeLocations.emit(null);
-    this.navCtrl.push(AlertPage);
-  }
-
-  /**
-   * Refresh history
-   * @param refresher
-   */
-  doRefresh(refresher) {
-    console.log('Begin async operation', refresher);
-    this.readHistory(refresher);
-    setTimeout(() => {
-      refresher.complete();
-    }, 2000);
   }
 }

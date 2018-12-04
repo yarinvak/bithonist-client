@@ -21,6 +21,7 @@ import {AlertsService} from './services/AlertsService';
 import {SocialSharing} from '@ionic-native/social-sharing';
 import {GooglePlus} from '@ionic-native/google-plus';
 import {Screenshot} from "@ionic-native/screenshot";
+import {ApiService} from "./services/ApiService";
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import {Screenshot} from "@ionic-native/screenshot";
     LocationsService,
     LoginService,
     AlertsService,
+    ApiService,
     SocialSharing,
     GooglePlus,
     Screenshot,
